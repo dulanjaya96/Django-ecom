@@ -3,12 +3,12 @@ from django.views.generic import ListView, DetailView, View, TemplateView
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.shortcuts import redirect
-from .models import Item, OrderItem, Order, BillingAddress, Payment, Coupon, Refund
+from .models import Item, OrderItem, Order, BillingAddress, Payment, Coupon, Refund, Profile
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-from .forms import CheckoutForm, CouponForm, RefundForm, PaymentForm
+from .forms import CheckoutForm, CouponForm, RefundForm, PaymentForm, UpdateUserForm, UpdateProfileForm
 from django.conf import settings
 import string
 import random
@@ -53,18 +53,14 @@ class CheckoutView(View):
                 street_address = form.cleaned_data.get('street_addres')
                 apartment_address = form.cleaned_data.get('apartment_address')      
                 country = form.cleaned_data.get('country')
-                zip = form.cleaned_data.get('zip')
-                # TODO add fuctionality for this fields
-                # same_shipping_address = form.cleaned_data.get('same_billing_address')
-                # save_info = form.cleaned_data.get('save_info')
+                zip = form.cleaned_data.get('zip')                
                 payment_option = form.cleaned_data.get('payment_option')
                 billing_address = BillingAddress(
                     user=self.request.user,
                     street_address=street_address,
                     apartment_address=apartment_address,
                     country=country,
-                    zip=zip,
-                    
+                    zip=zip,                    
                 )
                 billing_address.save()
                 order.billing_address = billing_address
@@ -76,7 +72,10 @@ class CheckoutView(View):
                     return redirect('core:payment', payment_option = 'paypal')
                 else:
                     messages.warning(self.request, "invalid payment option selection")
-                    return redirect("core:order-summary")        
+                    return redirect("core:order-summary")  
+            else:            
+                messages.warning(self.request, "Please fill checkout correctly.")            
+                return redirect('core:checkout')
         except ObjectDoesNotExist:
             messages.warning(self.request, "Failed checkout")
             return redirect('core:checkout')
@@ -353,6 +352,26 @@ class RequestRefundView(View):
 
 
 
-
+@login_required
+def profile(request):
+    profile = Profile.objects.get(user=request.user)   
+    
+    return render(request, 'user_profile.html', {'user': profile.user, 'profile': profile})
     
 
+@login_required
+def update_profile(request):
+    if request.method == 'POST':
+        user_form = UpdateUserForm(request.POST, instance=request.user)
+        profile_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.profile)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Your profile is updated successfully')
+            return redirect("core:user-profile")
+    else:
+        user_form = UpdateUserForm(instance=request.user)
+        profile_form = UpdateProfileForm(instance=request.user.profile)
+
+    return render(request, 'update_profile.html', {'user_form': user_form, 'profile_form': profile_form})

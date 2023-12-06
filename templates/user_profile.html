@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block content %}
+
+<main>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 mb-4">        
+        <img class="img-fluid img-thumbnail mt-4 mb-2" style="width: 250px; z-index: 1" src="{{ user.profile.avatar.url }}">
+        <hr>
+        <div class="media-body">
+          <h2 class="account-heading">{{ user.username }}</h2>
+          
+          <p class="text-secondary">{{ user.email }}</p>
+          <p class="text-secondary">{{ profile.bio }}</p>
+          <hr>
+          <a href="{% url 'two_factor:setup' %}" class="btn btn-primary custom-btn d-flex justify-content-center align-items-center">
+            {% trans "Enable Two-Factor" %}
+          </a>
+          <a href="{% url 'core:update-profile' %}" class="btn btn-warning custom-btn d-flex justify-content-center align-items-center">
+            Update
+          </a>          
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+
+{% endblock content %}
+
+

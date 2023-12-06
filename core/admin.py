@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Item, Order, OrderItem, Payment, Coupon, Refund
+from .models import Item, Order, OrderItem, Payment, Coupon, Refund, Profile
 
  
 def make_refund_accepted(modeladmin, request, queryset):
@@ -47,4 +47,5 @@ admin.site.register(Order, OrderAdmin)
 admin.site.register(Payment)
 admin.site.register(Coupon)
 admin.site.register(Refund)
+admin.site.register(Profile)
 # admin.site.register(UserProfile)

@@ -4,6 +4,8 @@ from django.conf import settings
 from django_countries.fields import CountryField
 from django.db.models import Sum
 from django.db.models.signals import post_save
+from django.contrib.auth.models import User
+from PIL import Image
 
 
 CATEGORY_CHOICES = (
@@ -146,7 +148,10 @@ class Payment(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.user.username
+        if self.user:
+            return self.user.username
+        else:
+            return "No User"
     
 class Coupon(models.Model):
     code = models.CharField(max_length=15)
@@ -165,6 +170,28 @@ class Refund(models.Model):
     def __str__(self):
         return f"{self.pk}"
     
+    
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
+    bio = models.TextField()
+
+    def __str__(self):
+        return self.user.username
+    
+
+
+# resizing images
+def save(self, *args, **kwargs):
+    super().save()
+
+    img = Image.open(self.avatar.path)
+
+    if img.height > 100 or img.width > 100:
+        new_img = (100, 100)
+        img.thumbnail(new_img)
+        img.save(self.avatar.path)
     
     
     
