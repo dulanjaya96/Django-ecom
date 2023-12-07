@@ -1,3 +1,4 @@
+{% load static %}
 {% load cart_template_tags %}
 
 <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
@@ -5,7 +6,14 @@
 
       <!-- Brand -->
       <a class="navbar-brand waves-effect" href="/">
+        <img
+        src="{% static 'brand/brand.png' %}"
+        height="30"
+        alt=" "
+        loading="lazy"
+      />
         <strong class="blue-text">Unique Dream</strong>
+        
       </a>
 
       <!-- Collapse -->

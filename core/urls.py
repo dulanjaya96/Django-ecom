@@ -11,7 +11,8 @@ from .views import (
     AddCouponView,
     RequestRefundView,
     profile,
-    update_profile
+    update_profile,
+    ChangePasswordView
 )
 
 app_name = 'core'
@@ -29,5 +30,6 @@ urlpatterns = [
     path('add-coupon/', AddCouponView.as_view(), name='add-coupon'),
     path('request-refund/', RequestRefundView.as_view(), name='request-refund'),    
     path('profile/', profile, name='user-profile'),
-    path('update-profile/', update_profile, name='update-profile')
+    path('update-profile/', update_profile, name='update-profile'),
+    path('password-change/', ChangePasswordView.as_view(), name='password_change'),
 ]

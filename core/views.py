@@ -10,6 +10,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from .forms import CheckoutForm, CouponForm, RefundForm, PaymentForm, UpdateUserForm, UpdateProfileForm
 from django.conf import settings
+from django.urls import reverse_lazy
+from django.contrib.auth.views import PasswordChangeView
+from django.contrib.messages.views import SuccessMessageMixin
 import string
 import random
 import stripe
@@ -181,7 +184,7 @@ class PaymentView(View):
 
 class HomeView(ListView):
     model = Item    
-    paginate_by = 10
+    paginate_by = 8
     template_name = "home.html"
 
 class OrderSummaryView(LoginRequiredMixin, View):
@@ -375,3 +378,8 @@ def update_profile(request):
         profile_form = UpdateProfileForm(instance=request.user.profile)
 
     return render(request, 'update_profile.html', {'user_form': user_form, 'profile_form': profile_form})
+
+class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
+    template_name = 'change_password.html'
+    success_message = "Successfully Changed Your Password"
+    success_url = reverse_lazy('core:user-profile')

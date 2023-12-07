@@ -11,13 +11,14 @@ from PIL import Image
 CATEGORY_CHOICES = (
     ('S', 'Shirt'),
     ('SW', 'Sport wear'),
-    ('OW', 'Outwear')
+    ('OW', 'Outwear'),
+     ('CM', 'cosmetic')
 )
 
 LABEL_CHOICES = (
     ('P', 'primary'),
     ('S', 'secondary'),
-    ('D', 'danger')
+    ('D', 'danger')   
 )
 class Item(models.Model):
     title = models.CharField(max_length=100)
@@ -28,6 +29,7 @@ class Item(models.Model):
     slug = models.SlugField()
     description = models.TextField()
     image = models.ImageField()
+    tag = models.CharField(max_length=20)
 
     def __str__(self):
         return self.title
@@ -133,7 +135,7 @@ class BillingAddress(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
     street_address = models.CharField(max_length=100, null=True, blank=True)
-    apartment_address = models.CharField( max_length=100)      
+    apartment_address = models.CharField( max_length=100,)      
     country = CountryField(multiple=False)
     zip = models.CharField(max_length=100)
     
@@ -178,20 +180,18 @@ class Profile(models.Model):
     bio = models.TextField()
 
     def __str__(self):
-        return self.user.username
-    
-
+        return self.user.username   
 
 # resizing images
-def save(self, *args, **kwargs):
-    super().save()
+    # def save(self, *args, **kwargs):
+    #     super().save()
 
-    img = Image.open(self.avatar.path)
+    #     img = Image.open(self.avatar.path)
 
-    if img.height > 100 or img.width > 100:
-        new_img = (100, 100)
-        img.thumbnail(new_img)
-        img.save(self.avatar.path)
+    #     if img.height > 100 or img.width > 100:
+    #         new_img = (100, 100)
+    #         img.thumbnail(new_img)
+    #         img.save(self.avatar.path)
     
     
     
