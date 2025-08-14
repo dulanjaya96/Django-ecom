@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Item, Order, OrderItem, Payment, Coupon, Refund, Profile
 import csv
 from django.http import HttpResponse
-from rangefilter.filter import DateRangeFilter
+from rangefilter.filters import DateRangeFilter
 
  
 def make_refund_accepted(modeladmin, request, queryset):
